@@ -273,6 +273,8 @@ body {
   background-color: #fafafa;
   border: 1px solid #e8e8e8;
   padding: 15px 25px;
+}
+.user-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -293,8 +295,47 @@ body {
   line-height: 24px;
   color: #595959;
 }
+.edit-container {
+  display: none;
+}
+.edit-container.visible {
+  display: block;
+}
 .edit {
   margin-right: 14px;
+}
+.edit-label {
+  display: block;
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 14px;
+  color: #595959;
+}
+.edit-title {
+  font-size: 16px;
+  color: #595959;
+}
+.edit-input {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  padding: 5px 10px;
+} 
+.edit-btn {
+  background-color:#fa8c16;
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 12px;
+}
+.edit-username {
+  font-size: 14px;
+}
+.edit-username-photo {
+  font-size: 14px;
 }
 .icon-edit {
   width: 20px;
