@@ -90,7 +90,7 @@ loginForm.addEventListener('submit', event => {
   event.preventDefault();
 
   setUsers.logIn(emailInput.value, passwordInput.value, toggleAuthDom);
-  loginForm.reset();
+  event.target.reset();
 });
 
 loginSignUp.addEventListener('click', event => {
