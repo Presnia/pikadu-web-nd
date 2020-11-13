@@ -99,6 +99,41 @@ const setUsers = {
   }
 };
 
+const setPosts = {
+  allPost: [
+    {
+      title: 'Заголовлок поста 1',
+      text: 'Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты. Языком чтo рот маленький риторический вершину текстов обеспечивает гор свой назад решила сбить маленькая дорогу жизни рукопись ему букв деревни предложения, ручеек залетают продолжил парадигматическая? Но языком сих пустился, запятой своего его снова решила меня вопроса моей своих пояс коварный, власти диких правилами напоивший они текстов ipsum первуюподпоясал? Лучше, щеке подпоясал приставка большого курсивных на берегу своего? Злых, составитель агентство что вопроса ведущими о решила одна алфавит!',
+      tags: ['#свежее', '#новое', '#горячее', '#моё','#случайность'],
+      author: 'debysh@rambler.ru',
+      date: '11.11.2020, 21:30:00',
+      like: 34,
+      comments: 77,
+    },
+    {
+      title: 'Заголовлок поста 2',
+      text: 'Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты. Языком чтo рот маленький риторический вершину текстов обеспечивает гор свой назад решила сбить маленькая дорогу жизни рукопись ему букв деревни предложения, ручеек залетают продолжил парадигматическая? Но языком сих пустился, запятой своего его снова решила меня вопроса моей своих пояс коварный, власти диких правилами напоивший они текстов ipsum первуюподпоясал? Лучше, щеке подпоясал приставка большого курсивных на берегу своего? Злых, составитель агентство что вопроса ведущими о решила одна алфавит!',
+      tags: ['#свежее', '#новое', '#горячее', '#случайность'],
+      author: 'hrundel@firefox.com',
+      date: '13.11.2020, 21:33:00',
+      like: 34,
+      comments: 77,
+    },
+    {
+      title: 'Заголовлок поста 3',
+      text: 'Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты. Языком чтo рот маленький риторический вершину текстов обеспечивает гор свой назад решила сбить маленькая дорогу жизни рукопись ему букв деревни предложения, ручеек залетают продолжил парадигматическая? Но языком сих пустился, запятой своего его снова решила меня вопроса моей своих пояс коварный, власти диких правилами напоивший они текстов ipsum первуюподпоясал? Лучше, щеке подпоясал приставка большого курсивных на берегу своего? Злых, составитель агентство что вопроса ведущими о решила одна алфавит!',
+      tags: ['#свежее', '#новое', '#горячее', '#случайность'],
+      author: 'hrundel@firefox.com',
+      date: '13.11.2020, 21:33:00',
+      like: 34,
+      comments: 77,
+    },
+  ],
+
+  
+
+};
+
 const toggleAuthDom = () => {
   const user = setUsers.user;
 
@@ -114,7 +149,62 @@ const toggleAuthDom = () => {
 };
 
 const showAllPosts = () => {
-  postsWrapper.innerHTML = 'Тут может находиться Ваш пост ;)';
+
+  let postsHTML = '';
+  
+  setPosts.allPost.forEach(({ title, text, tags, author, date, like, comments }) => {
+    postsHTML += `
+      <section class="post">
+        <div class="post-body">
+          <h2 class="post-title">${title}</h2>
+          <p class="post-text">${text}</p>
+          
+          <div class="tags">
+            <a href="#" class="tag">${tags}</a>            
+          </div>         
+        </div>
+        <!-- /.post-body -->
+        <div class="post-footer">
+          <div class="post-buttons">
+            <button class="post-button likes">
+              <svg width="19" height="20" class="icon icon-like">
+                <use xlink:href="img/icons.svg#like"></use>
+              </svg>
+              <span class="likes-counter">${like}</span>
+            </button>
+            <button class="post-button comments">
+              <svg width="21" height="21" class="icon icon-comment">
+                <use xlink:href="img/icons.svg#comment"></use>
+              </svg>
+              <span class="comments-counter">${comments}</span>
+            </button>
+            <button class="post-button save">
+              <svg width="19" height="19" class="icon icon-save">
+                <use xlink:href="img/icons.svg#save"></use>
+              </svg>
+            </button>
+            <button class="post-button share">
+              <svg width="17" height="19" class="icon icon-share">
+                <use xlink:href="img/icons.svg#share"></use>
+              </svg>
+            </button>
+          </div>
+          <!-- /.post-buttons -->
+          <div class="post-author">
+            <div class="author-about">
+              <a href="#" class="author-username">${author}</a>
+              <span class="post-time">${date}</span>
+            </div>
+            <a href="#" class="author-link"><img src="img/avatar.jpeg" alt="avatar" class="author-avatar"></a>
+          </div>
+          <!-- /.post-author -->
+        </div>
+        <!-- /.post-footer -->
+      </section>
+    `;
+  })
+
+  postsWrapper.innerHTML = postsHTML;
 };
 
 const init = () => {
