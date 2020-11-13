@@ -2,13 +2,6 @@
 let menuToggle = document.querySelector('#menu-toggle');
 // Создаем переменную, в которую положим меню
 let menu = document.querySelector('.sidebar');
-// отслеживаем клик по кнопке меню и запускаем функцию 
-menuToggle.addEventListener('click', function (event) {
-  // отменяем стандартное поведение ссылки
-  event.preventDefault();
-  // вешаем класс на меню, когда кликнули по кнопке меню 
-  menu.classList.toggle('visible');
-})
 
 const regExpValidEmail = /^\w+@\w+\.\w{2, 12}$/;
 
@@ -28,6 +21,8 @@ const editContainer = document.querySelector('.edit-container');
 const listUsername = document.querySelector('.edit-username');
 const editPhotoURL = document.querySelector('.edit-username-photo');
 const userAvatarElem = document.querySelector('.user-avatar');
+
+const postsWrapper = document.querySelector('.posts');
 
 const listUsers = [
   {
@@ -77,7 +72,7 @@ const setUsers = {
     }
 
     if (!this.getUser(email)) {
-      const user = {email, password, displayName: email};
+      const user = {email, password, displayName: email.substring(0, email.indexOf('@'))};
       listUsers.push(user);
       this.authorizedUser(user);
       handler();
@@ -118,39 +113,63 @@ const toggleAuthDom = () => {
   }
 };
 
-loginForm.addEventListener('submit', event => {
+const showAllPosts = () => {
+  postsWrapper.innerHTML = 'Тут может находиться Ваш пост ;)';
+};
+
+const init = () => {
+
+  // отслеживаем клик по кнопке меню и запускаем функцию 
+  menuToggle.addEventListener('click', function (event) {
+  // отменяем стандартное поведение ссылки
+  event.preventDefault();
+  // вешаем класс на меню, когда кликнули по кнопке меню 
+  menu.classList.toggle('visible');
+  });
+
+  loginForm.addEventListener('submit', event => {
   event.preventDefault();
 
   setUsers.logIn(emailInput.value, passwordInput.value, toggleAuthDom);
   event.target.reset();
-});
+  });
 
-loginSignUp.addEventListener('click', event => {
+  loginSignUp.addEventListener('click', event => {
   event.preventDefault();
 
   setUsers.signUp(emailInput.value, passwordInput.value, toggleAuthDom);
   loginForm.reset();
-});
+  });
 
-exitElem.addEventListener('click', event => {
+  exitElem.addEventListener('click', event => {
   event.preventDefault();
   setUsers.logOut(toggleAuthDom);
-});
+  });
 
-editElem.addEventListener('click', event => {
+  editElem.addEventListener('click', event => {
   event.preventDefault();
   editContainer.classList.toggle('visible');
   listUsername.value = setUsers.user.displayName;
-});
+  });
 
-editContainer.addEventListener('submit', event => {
+  editContainer.addEventListener('submit', event => {
   event.preventDefault();
 
   setUsers.editUser(listUsername.value, editPhotoURL.value, toggleAuthDom);
   editContainer.classList.remove('visible');
+  });
+
+  showAllPosts();
+  toggleAuthDom();
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  init();
 })
 
-toggleAuthDom();
+
+
+
 
 
 
