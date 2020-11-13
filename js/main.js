@@ -139,13 +139,15 @@ exitElem.addEventListener('click', event => {
 
 editElem.addEventListener('click', event => {
   event.preventDefault();
-  editContainer.classList.toggle('visible')
+  editContainer.classList.toggle('visible');
+  listUsername.value = setUsers.user.displayName;
 });
 
-editContainer.addEventListener('click', event => {
+editContainer.addEventListener('submit', event => {
   event.preventDefault();
 
   setUsers.editUser(listUsername.value, editPhotoURL.value, toggleAuthDom);
+  editContainer.classList.remove('visible');
 })
 
 toggleAuthDom();
