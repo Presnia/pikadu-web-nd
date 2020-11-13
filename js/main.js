@@ -22,6 +22,12 @@ const userElem = document.querySelector('.user');
 const userNameElem = document.querySelector('.user-name');
 
 const exitElem = document.querySelector('.exit');
+const editElem = document.querySelector('.edit');
+const editContainer = document.querySelector('.edit-container');
+
+const listUsername = document.querySelector('.edit-username');
+const editPhotoURL = document.querySelector('.edit-username-photo');
+const userAvatarElem = document.querySelector('.user-avatar');
 
 const listUsers = [
   {
@@ -79,6 +85,17 @@ const setUsers = {
       alert('Пользователь с таким email уже зарегистрирован');
     }
   },
+  editUser(userName, userPhoto, handler ) {
+    if (userName) {
+      this.user.displayName = userName;
+    }
+
+    if (userPhoto) {
+      this.user.photo = userPhoto;
+    }
+
+    handler();
+  }, 
   getUser(email) {
     return listUsers.find((item) => item.email === email)
   },
@@ -89,12 +106,12 @@ const setUsers = {
 
 const toggleAuthDom = () => {
   const user = setUsers.user;
-  console.log('user: ', user);
 
   if(user) {
     loginElem.style.display = 'none';
     userElem.style.display = '';
     userNameElem.textContent = user.displayName;
+    userAvatarElem.src = user.photo ? user.photo : userAvatarElem.src;;
   } else {
     loginElem.style.display = '';
     userElem.style.display = 'none';
@@ -118,7 +135,17 @@ loginSignUp.addEventListener('click', event => {
 exitElem.addEventListener('click', event => {
   event.preventDefault();
   setUsers.logOut(toggleAuthDom);
+});
 
+editElem.addEventListener('click', event => {
+  event.preventDefault();
+  editContainer.classList.toggle('visible')
+});
+
+editContainer.addEventListener('click', event => {
+  event.preventDefault();
+
+  setUsers.editUser(listUsername.value, editPhotoURL.value, toggleAuthDom);
 })
 
 toggleAuthDom();
