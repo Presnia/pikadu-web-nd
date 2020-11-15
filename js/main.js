@@ -21,6 +21,8 @@ const editContainer = document.querySelector('.edit-container');
 const listUsername = document.querySelector('.edit-username');
 const editPhotoURL = document.querySelector('.edit-username-photo');
 const userAvatarElem = document.querySelector('.user-avatar');
+const buttonNewPost = document.querySelector('.button-new-post');
+const addPostElem = document.querySelector('.add-post');
 
 const postsWrapper = document.querySelector('.posts');
 
@@ -28,8 +30,9 @@ const listUsers = [
   {
     id: '01',
     email: 'debysh@rambler.ru',
-    password: '2143656',
+    password: '214365',
     displayName: 'Presnia',
+    photo: 'https://www.liga.net/images/general/2019/02/14/20190214174619-9721.png',
   },
   {
     id: '02',
@@ -104,8 +107,8 @@ const setPosts = {
     {
       title: 'Заголовлок поста 1',
       text: 'Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты. Языком чтo рот маленький риторический вершину текстов обеспечивает гор свой назад решила сбить маленькая дорогу жизни рукопись ему букв деревни предложения, ручеек залетают продолжил парадигматическая? Но языком сих пустился, запятой своего его снова решила меня вопроса моей своих пояс коварный, власти диких правилами напоивший они текстов ipsum первуюподпоясал? Лучше, щеке подпоясал приставка большого курсивных на берегу своего? Злых, составитель агентство что вопроса ведущими о решила одна алфавит!',
-      tags: ['#свежее', '#новое', '#горячее', '#моё','#случайность'],
-      author: 'debysh@rambler.ru',
+      tags: ['свежее', 'новое', 'горячее', 'моё','случайность'],
+      author: {displayName: 'Presnia', photo: 'https://www.liga.net/images/general/2019/02/14/20190214174619-9721.png'},
       date: '11.11.2020, 21:30:00',
       like: 34,
       comments: 77,
@@ -113,8 +116,8 @@ const setPosts = {
     {
       title: 'Заголовлок поста 2',
       text: 'Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты. Языком чтo рот маленький риторический вершину текстов обеспечивает гор свой назад решила сбить маленькая дорогу жизни рукопись ему букв деревни предложения, ручеек залетают продолжил парадигматическая? Но языком сих пустился, запятой своего его снова решила меня вопроса моей своих пояс коварный, власти диких правилами напоивший они текстов ipsum первуюподпоясал? Лучше, щеке подпоясал приставка большого курсивных на берегу своего? Злых, составитель агентство что вопроса ведущими о решила одна алфавит!',
-      tags: ['#свежее', '#новое', '#горячее', '#случайность'],
-      author: 'hrundel@firefox.com',
+      tags: ['свежее', 'новое', 'горячее', 'случайность'],
+      author: {displayName: 'Hrundel', photo: 'https://u.kanobu.ru/editor/images/95/ba49d9d7-92c4-4d82-83f6-4b53fa80de7b.jpg'},
       date: '13.11.2020, 21:33:00',
       like: 34,
       comments: 77,
@@ -122,17 +125,15 @@ const setPosts = {
     {
       title: 'Заголовлок поста 3',
       text: 'Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты. Языком чтo рот маленький риторический вершину текстов обеспечивает гор свой назад решила сбить маленькая дорогу жизни рукопись ему букв деревни предложения, ручеек залетают продолжил парадигматическая? Но языком сих пустился, запятой своего его снова решила меня вопроса моей своих пояс коварный, власти диких правилами напоивший они текстов ipsum первуюподпоясал? Лучше, щеке подпоясал приставка большого курсивных на берегу своего? Злых, составитель агентство что вопроса ведущими о решила одна алфавит!',
-      tags: ['#свежее', '#новое', '#горячее', '#случайность'],
-      author: 'hrundel@firefox.com',
+      tags: ['свежее', 'новое', 'горячее', 'случайность'],
+      author: {displayName: 'Presnia', photo: 'https://www.liga.net/images/general/2019/02/14/20190214174619-9721.png'},
       date: '13.11.2020, 21:33:00',
       like: 34,
       comments: 77,
     },
   ],
-
-  
-
 };
+
 
 const toggleAuthDom = () => {
   const user = setUsers.user;
@@ -141,11 +142,25 @@ const toggleAuthDom = () => {
     loginElem.style.display = 'none';
     userElem.style.display = '';
     userNameElem.textContent = user.displayName;
-    userAvatarElem.src = user.photo ? user.photo : userAvatarElem.src;;
+    userAvatarElem.src = user.photo ? user.photo : userAvatarElem.src;
+    buttonNewPost.classList.add('visible');
   } else {
     loginElem.style.display = '';
     userElem.style.display = 'none';
+    buttonNewPost.classList.remove('visible');
+    addPostElem.classList.remove('visible');
+    postsWrapper.classList.add('visible');
+    //todo удалить
+    addPostElem.classList.add('visible');
+    postsWrapper.classList.remove('visible');
+    //end
+
   }
+};
+
+const showAddPosts = () => {
+  addPostElem.classList.add('visible');
+  postsWrapper.classList.remove('visible');
 };
 
 const showAllPosts = () => {
@@ -160,7 +175,7 @@ const showAllPosts = () => {
           <p class="post-text">${text}</p>
           
           <div class="tags">
-            <a href="#" class="tag">${tags}</a>            
+            ${tags.map(tag => `<a href="#" class="tag">#${tag}</a>`)}                       
           </div>         
         </div>
         <!-- /.post-body -->
@@ -192,10 +207,10 @@ const showAllPosts = () => {
           <!-- /.post-buttons -->
           <div class="post-author">
             <div class="author-about">
-              <a href="#" class="author-username">${author}</a>
+              <a href="#" class="author-username">${author.displayName}</a>
               <span class="post-time">${date}</span>
             </div>
-            <a href="#" class="author-link"><img src="img/avatar.jpeg" alt="avatar" class="author-avatar"></a>
+            <a href="#" class="author-link"><img src=${author.photo || "img/avatar.jpeg"} alt="avatar" class="author-avatar"></a>
           </div>
           <!-- /.post-author -->
         </div>
@@ -248,6 +263,17 @@ const init = () => {
   setUsers.editUser(listUsername.value, editPhotoURL.value, toggleAuthDom);
   editContainer.classList.remove('visible');
   });
+
+  buttonNewPost.addEventListener('click', event => {
+  event.preventDefault();
+  showAddPosts();
+});
+
+addPostElem.addEventListener('submit', event => {
+  event.preventDefault();
+  const formElements = addPostElem.elements;
+  console.log('formElements: ', formElements);
+})
 
   showAllPosts();
   toggleAuthDom();
