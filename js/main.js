@@ -103,7 +103,7 @@ const setUsers = {
 };
 
 const setPosts = {
-  allPost: [
+  allPosts: [
     {
       title: 'Заголовлок поста 1',
       text: 'Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты. Языком чтo рот маленький риторический вершину текстов обеспечивает гор свой назад решила сбить маленькая дорогу жизни рукопись ему букв деревни предложения, ручеек залетают продолжил парадигматическая? Но языком сих пустился, запятой своего его снова решила меня вопроса моей своих пояс коварный, власти диких правилами напоивший они текстов ipsum первуюподпоясал? Лучше, щеке подпоясал приставка большого курсивных на берегу своего? Злых, составитель агентство что вопроса ведущими о решила одна алфавит!',
@@ -132,6 +132,25 @@ const setPosts = {
       comments: 77,
     },
   ],
+  addPost(title, text, tags, handler) {
+
+    this.allPosts.unshift({
+      title,
+      text,
+      tags: tags.split(',').map(item => item.trim()),
+      author: {
+        displayName: setUsers.user.displayName,
+        photo: setUsers.user.photo,
+      },
+      date: new Date().toLocaleString(),
+      like: 0,
+      comments: 0,
+    })
+  
+    if (handler) {
+      handler();
+    }
+  }
 };
 
 
@@ -150,11 +169,6 @@ const toggleAuthDom = () => {
     buttonNewPost.classList.remove('visible');
     addPostElem.classList.remove('visible');
     postsWrapper.classList.add('visible');
-    //todo удалить
-    addPostElem.classList.add('visible');
-    postsWrapper.classList.remove('visible');
-    //end
-
   }
 };
 
@@ -167,7 +181,7 @@ const showAllPosts = () => {
 
   let postsHTML = '';
   
-  setPosts.allPost.forEach(({ title, text, tags, author, date, like, comments }) => {
+  setPosts.allPosts.forEach(({ title, text, tags, author, date, like, comments }) => {
     postsHTML += `
       <section class="post">
         <div class="post-body">
@@ -220,6 +234,9 @@ const showAllPosts = () => {
   })
 
   postsWrapper.innerHTML = postsHTML;
+
+  addPostElem.classList.remove('visible');
+  postsWrapper.classList.add('visible');
 };
 
 const init = () => {
@@ -271,8 +288,23 @@ const init = () => {
 
 addPostElem.addEventListener('submit', event => {
   event.preventDefault();
-  const formElements = addPostElem.elements;
-  console.log('formElements: ', formElements);
+
+  const { title, text, tags } = addPostElem.elements;
+
+  if (title.value.length < 5) {
+    alert('Слишком короткий заголовок ');
+    return;
+  }
+
+  if (text.value.length < 20) {
+    alert('Слишком короткий заголовок ');
+    return;
+  }
+
+  setPosts.addPost(title.value, text.value, tags.value, showAllPosts);
+
+  addPostElem.classList.remove('visible');
+  addPostElem.reset();
 })
 
   showAllPosts();
