@@ -1,3 +1,18 @@
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyA93750RNavcd-4DD9Y1_dMunuX9PpGSbU",
+  authDomain: "pickadu-web-nd.firebaseapp.com",
+  databaseURL: "https://pickadu-web-nd.firebaseio.com",
+  projectId: "pickadu-web-nd",
+  storageBucket: "pickadu-web-nd.appspot.com",
+  messagingSenderId: "393611592008",
+  appId: "1:393611592008:web:cc70eceaaa7c5f823c337d"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+console.log(firebase);
+
 // Создаем переменную, в которую положим кнопку меню
 let menuToggle = document.querySelector('#menu-toggle');
 // Создаем переменную, в которую положим меню
@@ -189,7 +204,7 @@ const showAllPosts = () => {
           <p class="post-text">${text}</p>
           
           <div class="tags">
-            ${tags.map(tag => `<a href="#" class="tag">#${tag}</a>`)}                       
+            ${tags.map(tag => `<a href="#${tag}" class="tag">#${tag}</a>`)}                       
           </div>         
         </div>
         <!-- /.post-body -->
