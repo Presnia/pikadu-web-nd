@@ -167,13 +167,26 @@ const setUsers = {
       }
     }
   }, 
-  /* getUser(email) {
-    return listUsers.find((item) => item.email === email)
-  },
-  authorizedUser(user) {
-    this.user = user;
-  } */
+
+  sendForget(email) {
+    firebase.auth().sendPasswordResetEmail(email)
+    .then(() => {
+      alert('Письмо отправлено');
+    })
+    .catch(error => {
+      console.log(error);
+    })
+  }
 };
+
+const loginForget = document.querySelector('.login-forget');
+
+loginForget.addEventListener('click', event => {
+  event.preventDefault();
+
+  setUsers.sendForget(emailInput.value);
+  emailInput.value = '';
+})
 
 const setPosts = {
   allPosts: [],
@@ -196,12 +209,12 @@ const setPosts = {
     })
 
     firebase.database().ref('post').set(this.allPosts)
-    .then(() => this.getPosts(handler))
+    .then(() => this.getPosts(handler));
     
   },
   getPosts(handler) {
     firebase.database().ref('post').on('value', snapshot => {
-      this.showAllPosts = snapshot.val() || [];
+      this.allPosts = snapshot.val() || [];
       handler();
     })
   }
