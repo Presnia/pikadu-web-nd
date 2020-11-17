@@ -11,7 +11,7 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-console.log(firebase);
+
 
 // Создаем переменную, в которую положим кнопку меню
 let menuToggle = document.querySelector('#menu-toggle');
@@ -41,7 +41,9 @@ const addPostElem = document.querySelector('.add-post');
 
 const postsWrapper = document.querySelector('.posts');
 
-const listUsers = [
+const DEFAULT_FOTO = userAvatarElem.src;
+
+/* const listUsers = [
   {
     id: '01',
     email: 'debysh@rambler.ru',
@@ -55,28 +57,57 @@ const listUsers = [
     password: '234567',
     displayName: 'Hrundel',
   },
-];
-
+]; */
 
 const setUsers = {
   user: null,
+  initUser(handler) {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        this.user = user;
+      } else {
+        this.user = null;
+      }
+      if (handler) handler();
+    })
+  },
   logIn(email, password, handler) {
     if (regExpValidEmail.test(email)) {
       alert('email not valid')
       return;
     }
+
+    firebase.auth()
+    .signInWithEmailAndPassword(email, password)
+    .catch(error => {
+      const errorCode = error.code;
+    const errorMessage = error.message;
+    if (errorCode === 'auth/wrong-password') {
+      console.log(errorMessage);
+      alert('Неверный парль');
+    } else if (errorCode === 'auth/user-not-found') {
+      console.log(errorMessage);
+      alert('Такой пользователь не найден');
+    } else {
+      alert(errorMessage);
+    }
+    console.log(error);
+    });
     
-    const user = this.getUser(email);
+    /* const user = this.getUser(email);
     if (user && user.password === password) {
       this.authorizedUser(user);
       handler();
     } else {
       alert('Пользователь с такими данными не найден')
-    }
+    } */
   },
-  logOut(handler) {
-    this.user = null;
-    handler();
+  logOut() {
+    // this.user = null; для работы без API
+    // if (handler) {
+    //   handler();
+    // }
+    firebase.auth().signOut();
   },
   signUp(email, password, handler) {
     if (regExpValidEmail.test(email)) {
@@ -88,95 +119,104 @@ const setUsers = {
       alert('Введите данные')
       return;
     }
+    //authorization
+    firebase.auth()
+    .createUserWithEmailAndPassword(email, password)
+    .then((data) => {
+      this.editUser(email.substring(0, email.indexOf('@')), null, handler);
+    })
+    .catch(error => {
+  // Handle Errors here.
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    if (errorCode === 'auth/weak-password') {
+      console.log(errorMessage);
+      alert('Слабый парль');
+    } else if (errorCode === 'auth/email-already-in-use') {
+      console.log(errorMessage);
+      alert('Такой пользователь уже существует');
+    } else {
+      alert(errorMessage);
+    }
+  // ...  
+});
 
-    if (!this.getUser(email)) {
+    /* if (!this.getUser(email)) {
       const user = {email, password, displayName: email.substring(0, email.indexOf('@'))};
       listUsers.push(user);
       this.authorizedUser(user);
       handler();
     } else {
       alert('Пользователь с таким email уже зарегистрирован');
-    }
+    } */
   },
-  editUser(userName, userPhoto, handler ) {
-    if (userName) {
-      this.user.displayName = userName;
-    }
+  editUser(displayName, photoURL, handler ) {
 
-    if (userPhoto) {
-      this.user.photo = userPhoto;
-    }
+    const user = firebase.auth().currentUser;
 
-    handler();
+    if (displayName) {
+      if (photoURL) {
+        user.updateProfile({
+          displayName,
+          photoURL,
+        }).then(handler)
+      } else {
+        user.updateProfile({
+          displayName,
+        }).then(handler)
+      }
+    }
   }, 
-  getUser(email) {
+  /* getUser(email) {
     return listUsers.find((item) => item.email === email)
   },
   authorizedUser(user) {
     this.user = user;
-  }
+  } */
 };
 
 const setPosts = {
-  allPosts: [
-    {
-      title: 'Заголовлок поста 1',
-      text: 'Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты. Языком чтo рот маленький риторический вершину текстов обеспечивает гор свой назад решила сбить маленькая дорогу жизни рукопись ему букв деревни предложения, ручеек залетают продолжил парадигматическая? Но языком сих пустился, запятой своего его снова решила меня вопроса моей своих пояс коварный, власти диких правилами напоивший они текстов ipsum первуюподпоясал? Лучше, щеке подпоясал приставка большого курсивных на берегу своего? Злых, составитель агентство что вопроса ведущими о решила одна алфавит!',
-      tags: ['свежее', 'новое', 'горячее', 'моё','случайность'],
-      author: {displayName: 'Presnia', photo: 'https://www.liga.net/images/general/2019/02/14/20190214174619-9721.png'},
-      date: '11.11.2020, 21:30:00',
-      like: 34,
-      comments: 77,
-    },
-    {
-      title: 'Заголовлок поста 2',
-      text: 'Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты. Языком чтo рот маленький риторический вершину текстов обеспечивает гор свой назад решила сбить маленькая дорогу жизни рукопись ему букв деревни предложения, ручеек залетают продолжил парадигматическая? Но языком сих пустился, запятой своего его снова решила меня вопроса моей своих пояс коварный, власти диких правилами напоивший они текстов ipsum первуюподпоясал? Лучше, щеке подпоясал приставка большого курсивных на берегу своего? Злых, составитель агентство что вопроса ведущими о решила одна алфавит!',
-      tags: ['свежее', 'новое', 'горячее', 'случайность'],
-      author: {displayName: 'Hrundel', photo: 'https://u.kanobu.ru/editor/images/95/ba49d9d7-92c4-4d82-83f6-4b53fa80de7b.jpg'},
-      date: '13.11.2020, 21:33:00',
-      like: 34,
-      comments: 77,
-    },
-    {
-      title: 'Заголовлок поста 3',
-      text: 'Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты. Языком чтo рот маленький риторический вершину текстов обеспечивает гор свой назад решила сбить маленькая дорогу жизни рукопись ему букв деревни предложения, ручеек залетают продолжил парадигматическая? Но языком сих пустился, запятой своего его снова решила меня вопроса моей своих пояс коварный, власти диких правилами напоивший они текстов ipsum первуюподпоясал? Лучше, щеке подпоясал приставка большого курсивных на берегу своего? Злых, составитель агентство что вопроса ведущими о решила одна алфавит!',
-      tags: ['свежее', 'новое', 'горячее', 'случайность'],
-      author: {displayName: 'Presnia', photo: 'https://www.liga.net/images/general/2019/02/14/20190214174619-9721.png'},
-      date: '13.11.2020, 21:33:00',
-      like: 34,
-      comments: 77,
-    },
-  ],
+  allPosts: [],
   addPost(title, text, tags, handler) {
 
+    const user = firebase.auth().currentUser;
+
     this.allPosts.unshift({
+      id: `postID${(+new Date()).toString(16)}-${user.uid}`,
       title,
       text,
       tags: tags.split(',').map(item => item.trim()),
       author: {
         displayName: setUsers.user.displayName,
-        photo: setUsers.user.photo,
+        photo: setUsers.user.photoURL ,
       },
       date: new Date().toLocaleString(),
       like: 0,
       comments: 0,
     })
-  
-    if (handler) {
+
+    firebase.database().ref('post').set(this.allPosts)
+    .then(() => this.getPosts(handler))
+    
+  },
+  getPosts(handler) {
+    firebase.database().ref('post').on('value', snapshot => {
+      this.showAllPosts = snapshot.val() || [];
       handler();
-    }
+    })
   }
 };
 
 
 const toggleAuthDom = () => {
   const user = setUsers.user;
+  console.log('user: ' ,user);
 
   if(user) {
     loginElem.style.display = 'none';
     userElem.style.display = '';
     userNameElem.textContent = user.displayName;
-    userAvatarElem.src = user.photo ? user.photo : userAvatarElem.src;
+    userAvatarElem.src = user.photoURL || DEFAULT_FOTO;
     buttonNewPost.classList.add('visible');
   } else {
     loginElem.style.display = '';
@@ -256,14 +296,6 @@ const showAllPosts = () => {
 
 const init = () => {
 
-  // отслеживаем клик по кнопке меню и запускаем функцию 
-  menuToggle.addEventListener('click', function (event) {
-  // отменяем стандартное поведение ссылки
-  event.preventDefault();
-  // вешаем класс на меню, когда кликнули по кнопке меню 
-  menu.classList.toggle('visible');
-  });
-
   loginForm.addEventListener('submit', event => {
   event.preventDefault();
 
@@ -280,7 +312,7 @@ const init = () => {
 
   exitElem.addEventListener('click', event => {
   event.preventDefault();
-  setUsers.logOut(toggleAuthDom);
+  setUsers.logOut();
   });
 
   editElem.addEventListener('click', event => {
@@ -322,8 +354,8 @@ addPostElem.addEventListener('submit', event => {
   addPostElem.reset();
 })
 
-  showAllPosts();
-  toggleAuthDom();
+  setUsers.initUser(toggleAuthDom);
+  setPosts.getPosts(showAllPosts);
 };
 
 document.addEventListener('DOMContentLoaded', () => {
